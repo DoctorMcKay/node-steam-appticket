@@ -1,4 +1,4 @@
-# Steam Encrypted App Ticket Parser
+# Steam App Ticket Parser
 
 This module enables you to parse Steam encrypted app tickets provided you know the proper decryption key. This allows you
 to authenticate Steam users from your game backend without needing to verify with Steam that the ticket is valid.
@@ -10,7 +10,7 @@ to authenticate Steam users from your game backend without needing to verify wit
 - `encryptionKey` - A `Buffer` or hex string containing the app's decryption key
 
 ```js
-const AppTicket = require('steam-encrypted-appticket');
+const AppTicket = require('steam-appticket');
 
 const ticket = Buffer.from('<ticket hex>', 'hex');
 const decryptionKey = '6ef99262a7da9e9979737d0822d5d66d03eb0c580b305981a505648b3e21b12e';
