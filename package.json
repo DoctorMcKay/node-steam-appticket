@@ -1,14 +1,14 @@
 {
-	"name": "steam-encrypted-appticket",
-	"version": "1.0.2",
-	"description": "Decrypts and parses encrypted Steam apptickets",
+	"name": "steam-appticket",
+	"version": "1.0.0",
+	"description": "Decrypts and parses Steam app tickets",
 	"keywords": [
 		"steam",
 		"appticket"
 	],
-	"homepage": "https://github.com/DoctorMcKay/node-steam-encrypted-appticket",
+	"homepage": "https://github.com/DoctorMcKay/node-steam-appticket",
 	"bugs": {
-		"url": "https://github.com/DoctorMcKay/node-steam-encrypted-appticket/issues"
+		"url": "https://github.com/DoctorMcKay/node-steam-appticket/issues"
 	},
 	"license": "MIT",
 	"author": {
@@ -18,7 +18,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/DoctorMcKay/node-steam-encrypted-appticket.git"
+		"url": "https://github.com/DoctorMcKay/node-steam-appticket.git"
 	},
 	"dependencies": {
 		"@doctormckay/stdlib": "^1.6.0",
