@@ -8,9 +8,10 @@ module.exports = parseAppTicket;
 /**
  * Parse a Steam app or session ticket and return an object containing its details.
  * @param {Buffer} ticket - The binary appticket
+ * @param {boolean} [allowInvalidSignature=false] - If true, won't return null if the ticket has no valid signature
  * @returns {object|null} - object if well-formed ticket (may not be valid), or null if not well-formed
  */
-function parseAppTicket(ticket) {
+function parseAppTicket(ticket, allowInvalidSignature) {
 	// https://github.com/SteamRE/SteamKit/blob/master/Resources/Structs/steam3_appticket.hsl
 
 	if (!ByteBuffer.isByteBuffer(ticket)) {
@@ -100,6 +101,10 @@ function parseAppTicket(ticket) {
 		details.isExpired = details.ownershipTicketExpires < date;
 		details.hasValidSignature = !!details.signature && SteamCrypto.verifySignature(ticket.slice(ownershipTicketOffset, ownershipTicketOffset + ownershipTicketLength).toBuffer(), details.signature);
 		details.isValid = !details.isExpired && (!details.signature || details.hasValidSignature);
+
+		if (!details.hasValidSignature && !allowInvalidSignature) {
+			throw new Error("Missing or invalid signature");
+		}
 	} catch (ex) {
 		return null; // not a valid ticket
 	}
