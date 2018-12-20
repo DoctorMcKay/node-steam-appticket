@@ -1,6 +1,6 @@
 {
 	"name": "steam-encrypted-appticket",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "Decrypts and parses encrypted Steam apptickets",
 	"keywords": [
 		"steam",
