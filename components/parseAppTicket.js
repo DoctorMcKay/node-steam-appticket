@@ -37,7 +37,7 @@ function parseAppTicket(ticket, allowInvalidSignature) {
 			}
 
 			ticket.skip(8); // unknown 1 and unknown 2
-			details.sessionExternalIP = Helpers.ipIntToString(ticket.readUint32());
+			details.sessionExternalIP = StdLib.IPv4.intToString(ticket.readUint32());
 			ticket.skip(4); // filler
 			details.clientConnectionTime = ticket.readUint32(); // time the client has been connected to Steam in ms
 			details.clientConnectionCount = ticket.readUint32(); // how many servers the client has connected to
