@@ -84,4 +84,4 @@ an object with these properties:
 	- If you passed `true` for `allowInvalidSignature` and the signature is missing, this will be true if the ticket is not expired!
 
 Note that you shouldn't rely on an unencrypted app ticket without first
-[verifying it with Steam](https://lab.xpaw.me/steam_api_documentation.html#ISteamUserAuth_AuthenticateUserTicket_v1).
+[verifying it with Steam](https://partner.steamgames.com/doc/webapi/ISteamUserAuth#AuthenticateUserTicket).
