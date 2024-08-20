@@ -1,31 +1,32 @@
-const StdLib = require('@doctormckay/stdlib');
-const SteamCrypto = require('@doctormckay/steam-crypto');
+import {sha1, crc32} from '@doctormckay/stdlib/hashing';
+import SteamCrypto from '@doctormckay/steam-crypto';
 
-const Protos = require('../protobufs/generated/_load');
-const parseAppTicket = require('./parseAppTicket');
-
-module.exports = parseEncryptedAppTicket;
+import Protos from '../protobuf-generated/load';
+import {parseAppTicket} from './parseAppTicket';
+import {DecodedEncryptedAppTicket} from '../index';
+import type {EncryptedAppTicket as EncryptedAppTicketType} from '../protobuf-generated/types';
 
 /**
  *
  * @param {Buffer} ticket - The raw encrypted appticket
  * @param {Buffer|string} encryptionKey - The app's encryption key, either raw hex or a Buffer
- * @returns {object}
+ * @returns {DecodedEncryptedAppTicket|null}
  */
-function parseEncryptedAppTicket(ticket, encryptionKey) {
+export function parseEncryptedAppTicket(ticket: Buffer, encryptionKey: Buffer|string): DecodedEncryptedAppTicket|null {
 	try {
-		let outer = Protos.EncryptedAppTicket.decode(ticket);
+		let outer = Protos.EncryptedAppTicket.decode(ticket) as EncryptedAppTicketType;
 		let key = typeof encryptionKey === 'string' ? Buffer.from(encryptionKey, 'hex') : encryptionKey;
 		let decrypted = SteamCrypto.symmetricDecrypt(outer.encrypted_ticket, key);
 
-		if (StdLib.Hashing.crc32(decrypted) != outer.crc_encryptedticket) {
+		if (crc32(decrypted) != outer.crc_encryptedticket) {
 			return null;
 		}
 
 		// the beginning is the user-supplied data
 		let userData = decrypted.slice(0, outer.cb_encrypteduserdata);
 		let ownershipTicketLength = decrypted.readUInt32LE(outer.cb_encrypteduserdata);
-		let ownershipTicket = parseAppTicket(decrypted.slice(outer.cb_encrypteduserdata, outer.cb_encrypteduserdata + ownershipTicketLength), true);
+		// @ts-ignore
+		let ownershipTicket:DecodedEncryptedAppTicket = parseAppTicket(decrypted.slice(outer.cb_encrypteduserdata, outer.cb_encrypteduserdata + ownershipTicketLength), true);
 		if (ownershipTicket) {
 			ownershipTicket.userData = userData;
 		}
@@ -34,10 +35,13 @@ function parseEncryptedAppTicket(ticket, encryptionKey) {
 		if (outer.ticket_version_no == 2) {
 			remainderOffset += 8 + 8 + 4;
 			let readOffset = outer.cb_encrypteduserdata + ownershipTicketLength;
+			// @ts-ignore
 			ownershipTicket.unknown2 = decrypted.readBigUint64LE(readOffset).toString();
 			readOffset += 8;
+			// @ts-ignore
 			ownershipTicket.unknown3 = decrypted.readBigUint64LE(readOffset).toString();
 			readOffset += 8;
+			// @ts-ignore
 			ownershipTicket.unknown4 = decrypted.readUInt32LE(readOffset);
 		}
 
@@ -49,11 +53,12 @@ function parseEncryptedAppTicket(ticket, encryptionKey) {
 			let hash = remainder.slice(8, 28);
 			remainder = remainder.slice(28);
 
-			if (!hash.equals(StdLib.Hashing.sha1(Buffer.concat([dataToHash, salt]), 'buffer'))) {
+			if (!hash.equals(sha1(Buffer.concat([dataToHash, salt]), 'buffer'))) {
 				return null;
 			}
 
 			if (ownershipTicket) {
+				// @ts-ignore
 				ownershipTicket.unknown1 = remainder.readUInt32LE(0);
 			}
 		}
