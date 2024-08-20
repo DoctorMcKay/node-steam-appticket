@@ -30,10 +30,21 @@ function parseEncryptedAppTicket(ticket, encryptionKey) {
 			ownershipTicket.userData = userData;
 		}
 
-		let remainder = decrypted.slice(outer.cb_encrypteduserdata + ownershipTicketLength);
+		let remainderOffset = 0;
+		if (outer.ticket_version_no == 2) {
+			remainderOffset += 8 + 8 + 4;
+			let readOffset = outer.cb_encrypteduserdata + ownershipTicketLength;
+			ownershipTicket.unknown2 = decrypted.readBigUint64LE(readOffset).toString();
+			readOffset += 8;
+			ownershipTicket.unknown3 = decrypted.readBigUint64LE(readOffset).toString();
+			readOffset += 8;
+			ownershipTicket.unknown4 = decrypted.readUInt32LE(readOffset);
+		}
+
+		let remainder = decrypted.slice(outer.cb_encrypteduserdata + ownershipTicketLength + remainderOffset);
 		if (remainder.length >= 8 + 20) {
 			// salted sha1 hash
-			let dataToHash = decrypted.slice(0, outer.cb_encrypteduserdata + ownershipTicketLength);
+			let dataToHash = decrypted.slice(0, outer.cb_encrypteduserdata + ownershipTicketLength + remainderOffset);
 			let salt = remainder.slice(0, 8);
 			let hash = remainder.slice(8, 28);
 			remainder = remainder.slice(28);
@@ -52,7 +63,10 @@ function parseEncryptedAppTicket(ticket, encryptionKey) {
 			'isExpired',
 			'hasValidSignature',
 			'isValid',
-			'unknown1'
+			'unknown1',
+			'unknown2',
+			'unknown3',
+			'unknown4'
 		].forEach((key) => {
 			delete ownershipTicket[key];
 		});
