@@ -10,7 +10,10 @@ to authenticate Steam users from your game backend without needing to verify wit
 - `encryptionKey` - A `Buffer` or hex string containing the app's decryption key
 
 ```js
+// CJS Syntax
 const AppTicket = require('steam-appticket');
+// ESM Syntax
+import * as AppTicket from 'steam-appticket';
 
 const ticket = Buffer.from('<ticket hex>', 'hex');
 const decryptionKey = '6ef99262a7da9e9979737d0822d5d66d03eb0c580b305981a505648b3e21b12e';
