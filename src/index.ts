@@ -1,4 +1,10 @@
-import SteamID from 'steamid';
+import type SteamID from 'steamid';
+
+import {parseAppTicket} from './components/parseAppTicket';
+import {parseEncryptedAppTicket} from './components/parseEncryptedAppTicket';
+
+export default {parseEncryptedAppTicket, parseAppTicket};
+export {parseEncryptedAppTicket, parseAppTicket};
 
 export interface AppOwnershipTicket {
 	version: number;
@@ -44,6 +50,3 @@ export interface DecodedEncryptedAppTicket {
 	}[];
 	userData: Buffer;
 }
-
-export * from './components/parseAppTicket';
-export * from './components/parseEncryptedAppTicket';
