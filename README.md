@@ -11,6 +11,10 @@ to authenticate Steam users from your game backend without needing to verify wit
 
 ```js
 const AppTicket = require('steam-appticket');
+// OR
+import AppTicket from 'steam-appticket';
+// OR
+import {parseEncryptedAppTicket} from 'steam-appticket';
 
 const ticket = Buffer.from('<ticket hex>', 'hex');
 const decryptionKey = '6ef99262a7da9e9979737d0822d5d66d03eb0c580b305981a505648b3e21b12e';
@@ -52,6 +56,17 @@ ticket's `userData`.
 ### parseAppTicket(ticket[, allowInvalidSignature])
 - `ticket` - A `Buffer` containing the ticket you want to parse
 - `allowInvalidSignature` - Optional. Pass `true` to get back data even if the ticket has no valid signature. Defaults to `false`.
+
+```js
+const AppTicket = require('steam-appticket');
+// OR
+import AppTicket from 'steam-appticket';
+// OR
+import {parseAppTicket} from 'steam-appticket';
+
+const ticket = Buffer.from('<ticket hex>', 'hex');
+console.log(AppTicket.parseAppTicket(ticket));
+```
 
 You can also parse an app ticket that isn't encrypted. To do so, use `AppTicket.parseAppTicket(ticket)`. It returns
 an object with these properties:
